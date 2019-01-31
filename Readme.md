@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Дмитрий Страджу](https://up.htmlacademy.ru/php/8/user/128392).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Стулов](https://htmlacademy.ru/profile/id25231).
 
 ---
 
