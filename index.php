@@ -3,7 +3,32 @@ $is_auth = rand(0, 1);
 
 $user_name = 'Дмитрий'; // укажите здесь ваше имя
 
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+$categories = [
+    [
+        'name' => 'Доски и лыжи',
+        'icon' => 'boards',
+    ],
+    [
+        'name' => 'Крепления',
+        'icon' => 'attachment',
+    ],
+    [
+        'name' => 'Ботинки',
+        'icon' => 'boots',
+    ],
+    [
+        'name' => 'Одежда',
+        'icon' => 'clothing',
+    ],
+    [
+        'name' => 'Инструменты',
+        'icon' => 'tools',
+    ],
+    [
+        'name' => 'Разное',
+        'icon' => 'other',
+    ]
+];
 
 $products = [
     [
@@ -14,7 +39,7 @@ $products = [
     ],
     [
         'name' => 'DC Ply Mens 2016/2017 Snowboard',
-        'category' => 'Доски и лыжи	',
+        'category' => 'Доски и лыжи',
         'price' => '159999',
         'image' => 'img/lot-2.jpg'
     ],
@@ -69,9 +94,9 @@ $products = [
         <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
 
         <nav class="user-menu">
-            <?php if ($is_auth === 1): ?>
+            <?php if ($is_auth): ?>
                 <div class="user-menu__logged">
-                    <p><?php echo $user_name; ?></p>
+                    <p><?= $user_name; ?></p>
                 </div>
             <?php else: ?>
                 <ul class="user-menu__list">
@@ -91,86 +116,59 @@ $products = [
     <section class="promo">
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
-
-        <?php if (isset($categories) && count($categories)): ?>
-            <ul class="promo__list">
-                <?php foreach ($categories as $item): ?>
-                    <li class="promo__item promo__item--boards">
-                        <a class="promo__link" href="pages/all-lots.html"><?php echo $item; ?></a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-
+        <ul class="promo__list">
+            <?php foreach ($categories as $item): ?>
+                <li class="promo__item promo__item--<?= $item['icon']; ?>">
+                    <a class="promo__link" href="pages/all-lots.html"><?= $item['name']; ?></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </section>
-
-    <?php if (count($products)): ?>
-        <section class="lots">
-            <div class="lots__header">
-                <h2>Открытые лоты</h2>
-            </div>
-            <ul class="lots__list">
-                <?php foreach ($products as $item): ?>
-
-                    <?php if (!isset($item['name']) && !isset($item['category']) && !isset($item['price']) && !isset($item['image'])) {
-                        continue;
-                    } ?>
-
-                    <li class="lots__item lot">
-                        <div class="lot__image">
-                            <img width="350" height="260"
-                                 src="<?php echo (isset($item['image']) && file_exists($item['image'])) ? $item['image'] : 'img/logo.png'; ?>"
-                                 alt="<?php echo(isset($item['name']) ? $item['name'] : ''); ?>">
-                        </div>
-                        <div class="lot__info">
-                            <?php if (isset($item['category']) && $item['category']): ?>
-                                <span class="lot__category"><?php echo $item['category']; ?></span>
-                            <?php endif; ?>
-
-                            <?php if (isset($item['name']) && $item['name']): ?>
-                                <h3 class="lot__title">
-                                    <a class="text-link" href="pages/lot.html">
-                                        <?php echo $item['name']; ?>
-                                    </a>
-                                </h3>
-                            <?php endif; ?>
-
-                            <div class="lot__state">
-
-                                <?php if (isset($item['price']) && $item['price']): ?>
-                                    <div class="lot__rate">
-                                        <span class="lot__amount">Стартовая цена</span>
-                                        <span class="lot__cost"><?php echo $item['price']; ?><b class="rub">р</b></span>
-                                    </div>
-                                <?php endif; ?>
-
-                                <div class="lot__timer timer">
-                                    12:23
-                                </div>
+    <section class="lots">
+        <div class="lots__header">
+            <h2>Открытые лоты</h2>
+        </div>
+        <ul class="lots__list">
+            <?php foreach ($products as $item): ?>
+                <li class="lots__item lot">
+                    <div class="lot__image">
+                        <img width="350" height="260" alt="<?= $item['name']; ?>"
+                             src="<?= (file_exists($item['image'])) ? $item['image'] : 'img/logo.png'; ?>">
+                    </div>
+                    <div class="lot__info">
+                        <span class="lot__category"><?= $item['category']; ?></span>
+                        <h3 class="lot__title">
+                            <a class="text-link" href="pages/lot.html">
+                                <?= $item['name']; ?>
+                            </a>
+                        </h3>
+                        <div class="lot__state">
+                            <div class="lot__rate">
+                                <span class="lot__amount">Стартовая цена</span>
+                                <span class="lot__cost"><?= $item['price']; ?><b class="rub">р</b></span>
+                            </div>
+                            <div class="lot__timer timer">
+                                12:23
                             </div>
                         </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </section>
-    <?php endif; ?>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </section>
 </main>
 </div>
 
 <footer class="main-footer">
-
-    <?php if (isset($categories) && count($categories)): ?>
-        <nav class="nav">
-            <ul class="nav__list container">
-                <?php foreach ($categories as $item): ?>
-                    <li class="nav__item">
-                        <a href="pages/all-lots.html"><?php echo $item; ?></a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </nav>
-    <?php endif; ?>
-
+    <nav class="nav">
+        <ul class="nav__list container">
+            <?php foreach ($categories as $item): ?>
+                <li class="nav__item">
+                    <a href="pages/all-lots.html"><?= $item['name']; ?></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </nav>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2019, YetiCave</p>
