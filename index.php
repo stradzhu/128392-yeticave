@@ -1,7 +1,10 @@
 <?php
+
+require_once('functions.php');
+
 $is_auth = rand(0, 1);
 
-$user_name = 'Дмитрий'; // укажите здесь ваше имя
+$user_name = 'Дмитрий';
 
 $categories = [
     [
@@ -70,6 +73,7 @@ $products = [
 ];
 
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -145,7 +149,7 @@ $products = [
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?= $item['price']; ?><b class="rub">р</b></span>
+                                <span class="lot__cost"><?= priceFormat($item['price']); ?></span>
                             </div>
                             <div class="lot__timer timer">
                                 12:23
