@@ -1,11 +1,11 @@
 <?php
 
-function priceFormat($number, $currency = '&#8381;')
+function price_format($number)
 {
     $number = ceil($number);
     $number = number_format($number, 0, ',', '&nbsp;');
 
-    return $number . '&nbsp;' . $currency;
+    return $number;
 }
 
 function include_template($name, $data)

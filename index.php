@@ -1,12 +1,16 @@
 <?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 require_once('functions.php');
 
 $title = 'Главная';
 
-$is_auth = rand(0, 1);
-
-$user_name = 'Дмитрий';
+$user = [
+    'name' => 'Дмитрий',
+    'avatar' => '/img/avatar.jpg'
+];
 
 $categories = [
     [
@@ -81,8 +85,7 @@ $content = include_template('index.php', [
 
 $page = include_template('layout.php', [
     'title' => $title,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'user' => $user,
     'content' => $content,
     'categories' => $categories
 ]);
