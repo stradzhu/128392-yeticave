@@ -37,7 +37,7 @@
                                 </span>
                             </div>
                             <div class="lot__timer timer">
-                                12:23
+                                <?= time_lot_close($item['time']); ?>
                             </div>
                         </div>
                     </div>
