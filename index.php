@@ -26,12 +26,12 @@ $sql = 'SELECT l.id, l.title, IFNULL(MAX(b.price), l.price) AS price, l.image_pa
     . 'ORDER BY l.date_add DESC '
     . 'LIMIT 9';
 $result = mysqli_query($connect, $sql);
-$products = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
+$lots = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 
 
 $content = include_template('index.php', [
     'categories' => $categories,
-    'products' => $products
+    'lots' => $lots
 ]);
 
 
