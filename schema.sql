@@ -10,6 +10,7 @@ USE yeticave_128392;
 CREATE TABLE categories (
   id    INT UNSIGNED AUTO_INCREMENT,
   name  VARCHAR(255) NOT NULL,
+  icon  VARCHAR(255),
   PRIMARY KEY (id)
 );
 
@@ -36,7 +37,7 @@ CREATE TABLE lots (
   bet_step        INT UNSIGNED NOT NULL,
   category_id     INT UNSIGNED NOT NULL,
   user_id_author  INT UNSIGNED NOT NULL,
-  user_id_winner  INT UNSIGNED NOT NULL,
+  user_id_winner  INT UNSIGNED,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id_author) REFERENCES users (id),
   FOREIGN KEY (user_id_winner) REFERENCES users (id),
