@@ -29,7 +29,7 @@ function include_template($name, $data)
 function time_lot_close($time)
 {
     $one_day = 86400;
-    $timer = $time - time();
+    $timer = strtotime($time) - time();
 
     if ($timer <=0) {
         $text = 'закончился';

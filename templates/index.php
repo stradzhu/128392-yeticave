@@ -20,13 +20,13 @@
                 <li class="lots__item lot">
                     <div class="lot__image">
                         <img width="350" height="260" alt="<?= $item['name']; ?>"
-                             src="<?= (file_exists($item['image'])) ? $item['image'] : 'img/logo.png'; ?>">
+                             src="<?= (file_exists($item['image_path'])) ? $item['image_path'] : 'img/logo.png'; ?>">
                     </div>
                     <div class="lot__info">
                         <span class="lot__category"><?= $item['category']; ?></span>
                         <h3 class="lot__title">
                             <a class="text-link" href="pages/lot.html">
-                                <?= htmlspecialchars($item['name']); ?>
+                                <?= htmlspecialchars($item['title']); ?>
                             </a>
                         </h3>
                         <div class="lot__state">
@@ -37,7 +37,7 @@
                                 </span>
                             </div>
                             <div class="lot__timer timer">
-                                <?= time_lot_close($item['time']); ?>
+                                <?= time_lot_close($item['date_end']); ?>
                             </div>
                         </div>
                     </div>

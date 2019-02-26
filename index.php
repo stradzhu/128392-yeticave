@@ -3,97 +3,44 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
+require_once('init.php');
 require_once('functions.php');
 
-$title = 'Главная';
 
-$user = [
-    'name' => 'Дмитрий',
-    'avatar' => '/img/avatar.jpg'
-];
+$sql = 'SELECT name, image_path FROM users WHERE id = 1';
+$result = mysqli_query($connect, $sql);
+$user = $result ? mysqli_fetch_assoc($result) : [];
 
-$categories = [
-    [
-        'name' => 'Доски и лыжи',
-        'icon' => 'boards',
-    ],
-    [
-        'name' => 'Крепления',
-        'icon' => 'attachment',
-    ],
-    [
-        'name' => 'Ботинки',
-        'icon' => 'boots',
-    ],
-    [
-        'name' => 'Одежда',
-        'icon' => 'clothing',
-    ],
-    [
-        'name' => 'Инструменты',
-        'icon' => 'tools',
-    ],
-    [
-        'name' => 'Разное',
-        'icon' => 'other',
-    ]
-];
 
-$products = [
-    [
-        'name' => '2014 Rossignol District Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '10999',
-        'image' => 'img/lot-1.jpg',
-        'time' => '1549411200' // 6 февраля 2019 г., 0:00:00 UTC
-    ],
-    [
-        'name' => 'DC Ply Mens 2016/2017 Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '159999',
-        'image' => 'img/lot-2.jpg',
-        'time' => '1549670400' // 9 февраля 2019 г., 0:00:00 UTC
-    ],
-    [
-        'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'category' => 'Крепления',
-        'price' => '8000',
-        'image' => 'img/lot-3.jpg',
-        'time' => '1549756800' // 10 февраля 2019 г., 0:00:00 UTC
-    ],
-    [
-        'name' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'category' => 'Ботинки',
-        'price' => '10999',
-        'image' => 'img/lot-4.jpg',
-        'time' => '1549843200' // 11 февраля 2019 г., 0:00:00 UTC
-    ],
-    [
-        'name' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'category' => 'Одежда',
-        'price' => '7500',
-        'image' => 'img/lot-5.jpg',
-        'time' => '1549929600' // 12 февраля 2019 г., 0:00:00 UTC
-    ],
-    [
-        'name' => 'Маска Oakley Canopy',
-        'category' => 'Разное',
-        'price' => '5400',
-        'image' => 'img/lot-6.jpg',
-        'time' => '1550620800' // 20 февраля 2019 г., 0:00:00 UTC
-    ]
-];
+$sql = 'SELECT name, icon FROM categories';
+$result = mysqli_query($connect, $sql);
+$categories = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
+
+
+$sql = 'SELECT l.id, l.title, IFNULL(MAX(b.price), l.price) AS price, l.image_path, l.date_add, l.date_end, c.name AS category '
+    . 'FROM lots l '
+    . 'LEFT JOIN bets b ON l.id = b.lot_id '
+    . 'LEFT JOIN categories c ON l.category_id = c.id '
+    . 'WHERE (l.date_end > NOW()) AND (l.user_id_winner IS NULL) '
+    . 'GROUP BY l.id '
+    . 'ORDER BY l.date_add DESC '
+    . 'LIMIT 9';
+$result = mysqli_query($connect, $sql);
+$products = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
+
 
 $content = include_template('index.php', [
     'categories' => $categories,
     'products' => $products
 ]);
 
+
 $page = include_template('layout.php', [
-    'title' => $title,
+    'title' => 'Главная',
     'user' => $user,
     'content' => $content,
     'categories' => $categories
 ]);
+
 
 print $page;
