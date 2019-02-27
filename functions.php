@@ -44,3 +44,17 @@ function time_lot_close($time)
 
     return $text;
 }
+
+function get_user_info ($connect)
+{
+    $sql = 'SELECT name, image_path FROM users WHERE id = 1';
+    $result = mysqli_query($connect, $sql);
+    return $result ? mysqli_fetch_assoc($result) : [];
+}
+
+function get_categories_list ($connect)
+{
+    $sql = 'SELECT name, icon FROM categories';
+    $result = mysqli_query($connect, $sql);
+    return $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
+}
