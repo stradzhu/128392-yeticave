@@ -1,10 +1,6 @@
 <?php
 
 require_once('init.php');
-require_once('functions.php');
-
-$user = get_user_info($connect);
-$categories = get_categories_list($connect);
 
 $id = intval($_GET['id'] ?? 0);
 $sql = 'SELECT l.title, l.description, l.image_path, IFNULL(MAX(b.price), l.price) AS price, l.date_end, l.bet_step, c.name AS category '

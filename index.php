@@ -1,10 +1,6 @@
 <?php
 
 require_once('init.php');
-require_once('functions.php');
-
-$user = get_user_info($connect);
-$categories = get_categories_list($connect);
 
 $sql = 'SELECT l.id, l.title, IFNULL(MAX(b.price), l.price) AS price, l.image_path, l.date_add, l.date_end, c.name AS category '
     . 'FROM lots l '

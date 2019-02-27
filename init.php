@@ -3,6 +3,8 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
+require_once('functions.php');
+
 $db = [
     'host' => 'localhost',
     'user' => 'root',
@@ -18,3 +20,6 @@ if (!$connect) {
 }
 
 mysqli_set_charset($connect, "utf8");
+
+$user = get_user_info($connect);
+$categories = get_categories_list($connect);
