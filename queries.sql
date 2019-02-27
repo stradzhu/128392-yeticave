@@ -44,7 +44,7 @@ SELECT name FROM categories;
 -- название, стартовую цену, ссылку на изображение, цену, название категории
 -- Промежуточный результат, id для удобства выведен http://joxi.ru/1A5VjRVUn9PE8r
 -- Готовый результат http://joxi.ru/EA4VEaVUwbRQ5m
-SELECT l.title, l.price AS start_price, l.image_path, IFNULL(MAX(b.price),l.price) AS now_price, c.name AS category, l.date_add
+SELECT l.title, l.price AS start_price, l.image_path, IFNULL(MAX(b.price), l.price) AS now_price, c.name AS category, l.date_add
 FROM lots l
 LEFT JOIN bets b ON l.id = b.lot_id
 LEFT JOIN categories c ON l.category_id = c.id
