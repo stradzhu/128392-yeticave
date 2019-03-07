@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="form__input-file">
-                <input class="visually-hidden" type="file" id="photo2" name="image" required value="<?= $form['image'] ?? ''; ?>">
+                <input class="visually-hidden" type="file" id="photo2" name="image" required value="">
                 <label for="photo2">
                     <span>+ Добавить</span>
                 </label>

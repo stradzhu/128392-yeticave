@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Валидация имени
     $form['name'] = mysqli_real_escape_string($connect, $_POST['name'] ?? NULL);
+    $form['name'] = $form['name'] ? mb_substr($form['name'], 0, 255) : NULL;
 
     // Валидация категории. Проверим, существует ли такая по id
     $sql = 'SELECT id FROM categories WHERE id = ' . intval($_POST['category'] ?? 0);
@@ -17,18 +18,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Валидация сообщения
     $form['message'] = mysqli_real_escape_string($connect, $_POST['message'] ?? NULL);
+    $form['message'] = mb_substr($form['message'], 0, 1000);
 
     // Валидация изображения
     $form['image'] = NULL;
-    $tmp_name = $_FILES['image']['tmp_name'];
-    if (isset($tmp_name)) {
-        $file_extension = pathinfo($_FILES['image']['name'])['extension'];
+    if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
+        $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
+        $file_extension = isset(pathinfo($_FILES['image']['name'])['extension'])
+            ? mb_strtolower(pathinfo($_FILES['image']['name'])['extension'])
+            : NULL;
 
-        if (in_array($file_extension, ['jpg', 'jpeg', 'png']) && in_array($file_type, ['image/jpeg', 'image/png'])) {
-            $form['image'] = 'uploads/' . uniqid() . '.' . $file_extension;
-            move_uploaded_file($tmp_name, $form['image']);
-        }
+        $form['image'] = (in_array($file_extension, ['jpg', 'jpeg', 'png']) && in_array($file_type, ['image/jpeg', 'image/png']))
+            ? $tmp_name
+            : NULL;
     }
 
     // Валидация rate. Должен быть больше 0 и меньше 1 000 000 (максимальное сам придумал)
@@ -54,9 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $value ? '' : $errors[$key] = true;
     }
 
-    // Если все хорошо, добавляем в базу
+    // Если все хорошо, копируем файл и добавляем запись в базу
     if (!count($errors)) {
         $form['date'] .= ' 23:59:59'; // я считаю, что аукцион нужно завершить, когда закончится день
+
+        $tmp_name = $form['image'];
+        $form['image'] = 'uploads/' . uniqid() . '.' . $file_extension;
+        move_uploaded_file($tmp_name, $form['image']);
 
         $sql = "INSERT INTO lots (date_add, title, description, image_path, price, date_end, bet_step, category_id, user_id_author) VALUES "
             . "(NOW(), '{$form['name']}', '{$form['message']}', '{$form['image']}', '{$form['rate']}', '{$form['date']}', '{$form['step']}', '{$form['category']}', 1)";
@@ -67,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: /lot.php?id=' . $lot_id);
         } else {
             echo mysqli_error($connect);
-            exit;
         }
+        exit;
     }
 }
 
