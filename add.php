@@ -25,13 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
-        $file_extension = isset(pathinfo($_FILES['image']['name'])['extension'])
-            ? mb_strtolower(pathinfo($_FILES['image']['name'])['extension'])
-            : NULL;
 
-        $form['image'] = (in_array($file_extension, ['jpg', 'jpeg', 'png']) && in_array($file_type, ['image/jpeg', 'image/png']))
-            ? $tmp_name
-            : NULL;
+        if ($file_type === 'image/jpeg')
+            $file_extension = 'jpg';
+        else if ($file_type === 'image/png') {
+            $file_extension = 'png';
+        }
+
+        $form['image'] = in_array($file_type, ['image/jpeg', 'image/png']) ? $tmp_name : NULL;
     }
 
     // Валидация rate. Должен быть больше 0 и меньше 1 000 000 (максимальное сам придумал)
