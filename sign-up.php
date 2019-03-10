@@ -63,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Валидация изображения
     if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
-
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
 
