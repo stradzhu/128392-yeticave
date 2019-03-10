@@ -45,14 +45,18 @@ function time_lot_close($time)
     return $text;
 }
 
-function get_user_info ($connect)
+function get_user_info($connect)
 {
-    $sql = 'SELECT name, image_path FROM users WHERE id = 1';
-    $result = mysqli_query($connect, $sql);
-    return $result ? mysqli_fetch_assoc($result) : [];
+    if (isset($_SESSION['user_id'])) {
+        $sql = 'SELECT id, name, image_path FROM users WHERE id = ' . $_SESSION['user_id'];
+        $result = mysqli_query($connect, $sql);
+        return $result ? mysqli_fetch_assoc($result) : [];
+    }
+
+    return [];
 }
 
-function get_categories_list ($connect)
+function get_categories_list($connect)
 {
     $sql = 'SELECT id, name, icon FROM categories';
     $result = mysqli_query($connect, $sql);
@@ -106,4 +110,29 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     }
 
     return $stmt;
+}
+
+function get_page_error($code, $title, $text, $categories, $user)
+{
+    http_response_code($code);
+
+    $categories_template = include_template('categories.php', [
+        'categories' => $categories
+    ]);
+
+    $content = include_template('404.php', [
+        'categories_template' => $categories_template,
+        'title' => $title,
+        'text' => $text
+    ]);
+
+    $page = include_template('layout.php', [
+        'title' => $title,
+        'user' => $user,
+        'content' => $content,
+        'categories' => $categories
+    ]);
+
+    print $page;
+    exit();
 }

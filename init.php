@@ -21,5 +21,7 @@ if (!$connect) {
 
 mysqli_set_charset($connect, "utf8");
 
+session_start();
+
 $user = get_user_info($connect);
 $categories = get_categories_list($connect);
