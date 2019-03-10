@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($required_fileds as $value) {
         if (isset($_POST[$value]) && !empty(trim($_POST[$value]))) {
-            $form[$value] = mysqli_real_escape_string($connect, trim($_POST[$value]));
+            $form[$value] = trim($_POST[$value]);
         } else {
             $form[$value] = NULL;
             $errors[$value] = 'Это поле необходимо заполнить';
@@ -29,8 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors['email'] = 'Данный email уже используется';
             }
         }
-    } else {
-        $errors['email'] = 'Введите e-mail';
     }
 
     // Валидация пароля
@@ -89,9 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $form['password'] = password_hash($form['password'], PASSWORD_DEFAULT);
 
-        // На вский случай, ограничим максимальную длину строки
-        $form['name'] = mb_substr($form['name'], 0, 255);
-        $form['message'] = mb_substr($form['message'], 0, 255);
+        $form['email'] = mysqli_real_escape_string($connect, $form['email']);
+        $form['name'] = mysqli_real_escape_string($connect, $form['name']);
+        $form['message'] = mysqli_real_escape_string($connect, $form['message']);
 
         if ($form['image']) {
             $tmp_name = $form['image'];
