@@ -59,12 +59,12 @@ JOIN categories c ON l.category_id = c.id
 WHERE l.id = 1;
 
 -- Обновить название лота по его идентификатору
-UPDATE lots l
+UPDATE lots
 SET title = 'Новое название лота'
-WHERE l.id = 1;
+WHERE id = 1;
 
 -- Получить список самых свежих ставок для лота по его идентификатору
-SELECT b.date_add, b.price
-FROM bets b
-WHERE b.lot_id = 1
-ORDER BY b.date_add DESC;
+SELECT date_add, price
+FROM bets
+WHERE lot_id = 1
+ORDER BY date_add DESC;

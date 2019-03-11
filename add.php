@@ -80,7 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $lot_id = mysqli_insert_id($connect);
             header('Location: /lot.php?id=' . $lot_id);
         } else {
-            echo mysqli_error($connect);
+            $error_title = '500 Ошибка сервера';
+            $error_text = mysqli_error($connect);
+            get_page_error(500, $error_title, $error_text, $categories, $user);
         }
         exit;
     }

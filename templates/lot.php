@@ -32,71 +32,36 @@
                             Мин. ставка <span><?= price_format($lot['bet_min']); ?> р</span>
                         </div>
                     </div>
-                    <?php if (count($user)): ?>
-                        <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
-                            <p class="lot-item__form-item form__item form__item--invalid">
+                    <? /* Если пользователь авторизован (count($user)) и он не является автором этого объявления ($user['id'] !== $lot['user_id_author']) и
+                          ставок нету (!isset($bets[0]) или ставки есть, но последняя не от текущего пользователя ($bets[0]['user_id'] !== $user['id'])
+                          то тогда показать форму для добавления ставки */?>
+                    <?php if (count($user) && ($user['id'] !== $lot['user_id_author'])
+                        && (!isset($bets[0]) || (isset($bets[0]) && $bets[0]['user_id'] !== $user['id']))
+                        && (strtotime($lot['date_end']) - time() > 0)
+                        && (is_null($lot['user_id_winner']))): ?>
+                        <form class="lot-item__form" action="lot.php?id=<?= $lot['id']; ?>" method="post">
+                            <p class="lot-item__form-item form__item<?= isset($errors['cost']) ? ' form__item--invalid' : ''; ?>">
                                 <label for="cost">Ваша ставка</label>
-                                <input id="cost" type="text" name="cost" placeholder="<?= price_format($lot['bet_min']); ?>">
-                                <span class="form__error">Введите наименование лота</span>
+                                <input id="cost" type="text" name="cost" placeholder="<?= price_format($lot['bet_min']); ?>" required value="<?= $form['cost'] ?? ''; ?>">
+                                <?php if (isset($errors['cost'])): ?>
+                                    <span class="form__error"><?= $errors['cost']; ?></span>
+                                <?php endif; ?>
                             </p>
                             <button type="submit" class="button">Сделать ставку</button>
                         </form>
                     <?php endif; ?>
                 </div>
-                <?php if (count($user)): ?>
+                <?php if (count($bets)): ?>
                     <div class="history">
-                        <h3>История ставок (<span>10</span>)</h3>
+                        <h3>История ставок (<span><?= count($bets); ?></span>)</h3>
                         <table class="history__list">
-                            <tr class="history__item">
-                                <td class="history__name">Иван</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">5 минут назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Константин</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">20 минут назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Евгений</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">Час назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Игорь</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 08:21</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Енакентий</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 13:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Семён</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 12:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Илья</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 10:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Енакентий</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 13:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Семён</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 12:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Илья</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 10:20</td>
-                            </tr>
+                            <?php foreach ($bets as $item): ?>
+                                <tr class="history__item">
+                                    <td class="history__name"><?= htmlspecialchars($item['name']); ?></td>
+                                    <td class="history__price"><?= price_format($item['price']); ?> р</td>
+                                    <td class="history__time"><?= bets_add_friendly($item['date_add']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </table>
                     </div>
                 <?php endif; ?>
