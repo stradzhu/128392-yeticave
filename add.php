@@ -5,6 +5,12 @@ require_once('init.php');
 $errors = [];
 $form = [];
 
+if (!count($user)) {
+    $error_title = '403 Доступ запрещен';
+    $error_text = 'Эта страница доступна только для зарегистрированных пользователей';
+    get_page_error(403, $error_title, $error_text, $categories, $user);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Валидация имени
@@ -67,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($tmp_name, $form['image']);
 
         $sql = "INSERT INTO lots (date_add, title, description, image_path, price, date_end, bet_step, category_id, user_id_author) VALUES "
-            . "(NOW(), '{$form['name']}', '{$form['message']}', '{$form['image']}', '{$form['rate']}', '{$form['date']}', '{$form['step']}', '{$form['category']}', 1)";
+            . "(NOW(), '{$form['name']}', '{$form['message']}', '{$form['image']}', '{$form['rate']}', '{$form['date']}', '{$form['step']}', '{$form['category']}', {$user['id']})";
         $result = mysqli_query($connect, $sql);
 
         if ($result) {

@@ -7,10 +7,16 @@ $form = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $form['email'] = mysqli_real_escape_string($connect, $_POST['email'] ?? NULL);
-    $form['password'] = mysqli_real_escape_string($connect, $_POST['password'] ?? NULL);
-    $form['name'] = mysqli_real_escape_string($connect, $_POST['name'] ?? NULL);
-    $form['message'] = mysqli_real_escape_string($connect, $_POST['message'] ?? NULL);
+    $required_fileds = ['email', 'password', 'name', 'message'];
+
+    foreach ($required_fileds as $value) {
+        if (isset($_POST[$value]) && !empty(trim($_POST[$value]))) {
+            $form[$value] = trim($_POST[$value]);
+        } else {
+            $form[$value] = NULL;
+            $errors[$value] = 'Это поле необходимо заполнить';
+        }
+    }
 
     // Валидация email
     if ($form['email']) {
@@ -19,24 +25,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $sql = "SELECT email FROM users WHERE email = '{$form['email']}'";
             $result = mysqli_query($connect, $sql);
-            mysqli_fetch_assoc($result) ? $errors['email'] = 'Данный email уже используется' : '';
+            if (mysqli_fetch_assoc($result)) {
+                $errors['email'] = 'Данный email уже используется';
+            }
         }
-    } else {
-        $errors['email'] = 'Введите e-mail';
     }
 
     // Валидация пароля
-    $form['password'] ? '' : $errors['password'] = 'Введите пароль';
+    if ($form['password']) {
+        $length = mb_strlen($form['password'], 'UTF-8');
+        if ($length < 6) {
+            $errors['password'] = 'Пароль должен быть не менее 6-ти символов';
+        } elseif ($length > 100) {
+            $errors['password'] = 'Пароль должен быть не более 100-ти символов';
+        }
+    }
 
     // Валидация имени
-    $form['name'] ? '' : $errors['name'] = 'Введите имя';
+    if ($form['name']) {
+        $length = mb_strlen($form['name'], 'UTF-8');
+        if ($length < 2) {
+            $errors['name'] = 'Имя должно быть не менее 2-ух символов';
+        } elseif ($length > 255) {
+            $errors['name'] = 'Имя должно быть не более 255-ти символов';
+        }
+    }
 
     // Валидация контактных данных
-    $form['message'] ? '' : $errors['message'] = 'Напишите как с вами связаться';
+    if ($form['message']) {
+        $length = mb_strlen($form['message'], 'UTF-8');
+        if ($length < 5) {
+            $errors['message'] = 'Контактные данные должны быть не менее 5-ти символов';
+        } elseif ($length > 255) {
+            $errors['message'] = 'Контактные данные должны быть не более 255-ти символов';
+        }
+    }
 
     // Валидация изображения
     if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
-
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
 
@@ -60,9 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $form['password'] = password_hash($form['password'], PASSWORD_DEFAULT);
 
-        // На вский случай, ограничим максимальную длину строки
-        $form['name'] = mb_substr($form['name'], 0, 255);
-        $form['message'] = mb_substr($form['message'], 0, 255);
+        $form['email'] = mysqli_real_escape_string($connect, $form['email']);
+        $form['name'] = mysqli_real_escape_string($connect, $form['name']);
+        $form['message'] = mysqli_real_escape_string($connect, $form['message']);
 
         if ($form['image']) {
             $tmp_name = $form['image'];

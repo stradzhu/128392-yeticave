@@ -21,13 +21,13 @@ if ($lot) {
     $lot['bet_min'] = $lot['price'] + $lot['bet_step'];
     $content = include_template('lot.php', [
         'categories_template' => $categories_template,
-        'lot' => $lot
+        'lot' => $lot,
+        'user' => $user,
     ]);
 } else {
-    http_response_code(404);
-    $content = include_template('404.php', [
-        'categories_template' => $categories_template
-    ]);
+    $error_title = '404 Страница не найдена';
+    $error_text = 'Данной страницы не существует на сайте';
+    get_page_error(404, $error_title, $error_text, $categories, $user);
 }
 
 $page = include_template('layout.php', [

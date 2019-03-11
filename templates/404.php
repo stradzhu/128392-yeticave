@@ -3,7 +3,7 @@
     <?= $categories_template; ?>
 
     <section class="lot-item container">
-        <h2>404 Страница не найдена</h2>
-        <p>Данной страницы не существует на сайте.</p>
+        <h2><?= $title; ?></h2>
+        <p><?= $text; ?></p>
     </section>
 </main>
