@@ -23,9 +23,11 @@
 
             <nav class="user-menu">
                 <?php if (count($user)): ?>
-                    <div class="user-menu__image">
-                        <img src="<?= $user['image_path']; ?>" width="40" height="40" alt="<?= htmlspecialchars($user['name']); ?>">
-                    </div>
+                    <?php if ($user['image_path']): ?>
+                        <div class="user-menu__image">
+                            <img src="<?= $user['image_path']; ?>" width="40" height="40" alt="<?= htmlspecialchars($user['name']); ?>">
+                        </div>
+                    <?php endif; ?>
                     <div class="user-menu__logged">
                         <p><?= htmlspecialchars($user['name']); ?></p>
                         <a href="/logout.php">Выйти</a>

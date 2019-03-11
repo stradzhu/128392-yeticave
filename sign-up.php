@@ -103,7 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result) {
             header('Location: /login.php');
         } else {
-            echo mysqli_error($connect);
+            $error_title = '500 Ошибка сервера';
+            $error_text = mysqli_error($connect);
+            get_page_error(500, $error_title, $error_text, $categories, $user);
         }
         exit;
     }
