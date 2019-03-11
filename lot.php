@@ -79,8 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($connect, $sql);
 
             if ($result) {
-                header('Location: /lot.php?id=' . $lot['id']);
-                exit;
+                $lot['price'] = $form['cost'];
+                $lot['bet_min'] = $lot['price'] + $lot['bet_step'];
+
+                array_unshift($bets, [
+                    'date_add' => date('Y-m-d H:i:s'),
+                    'price' => $lot['price'],
+                    'user_id' => $user['id'],
+                    'name' => $user['name']
+                ]);
             } else {
                 $error_title = '500 Ошибка сервера';
                 $error_text = mysqli_error($connect);
