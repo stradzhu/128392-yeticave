@@ -63,16 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['cost'])) {
         // Нужно помочь пользователю и убрать пробелы, если он их ввел, например, 12 567
         $_POST['cost'] = str_replace(' ', '', $_POST['cost']);
+        $form['cost'] = intval($_POST['cost']);
 
-        if (intval($_POST['cost'])) {
-            $form['cost'] = intval($_POST['cost']);
-        } else {
-            $form['cost'] = NULL;
-            $errors['cost'] = 'Это поле необходимо заполнить';
-        }
-    }
-
-    if (!count($errors)) {
         if ($form['cost'] >= $lot['bet_min']) {
             $sql = "INSERT INTO bets (date_add, price, user_id, lot_id) VALUES "
                 . "(NOW(), {$form['cost']}, {$user['id']}, {$lot['id']})";
@@ -96,6 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $errors['cost'] = "Минимальная ставка - {$lot['bet_min']}";
         }
+    } else {
+        $errors['cost'] = 'Это поле необходимо заполнить';
     }
 }
 
