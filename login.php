@@ -5,6 +5,11 @@ require_once('init.php');
 $errors = [];
 $form = [];
 
+if (count($user)) {
+    header('Location: /');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $required_fileds = ['email', 'password'];
@@ -41,12 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "SELECT * FROM users WHERE email = '{$form['email']}'";
         $result = mysqli_query($connect, $sql);
 
-        $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : NULL;
+        $authentication = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : NULL;
 
-        if ($user) {
-            if (password_verify($form['password'], $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                header('Location: ./');
+        if ($authentication) {
+            if (password_verify($form['password'], $authentication['password'])) {
+                $_SESSION['user_id'] = $authentication['id'];
+                header('Location: /');
                 exit;
             }
             else {

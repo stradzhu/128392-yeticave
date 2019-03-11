@@ -45,6 +45,27 @@ function time_lot_close($time)
     return $text;
 }
 
+function bets_add_friendly($time) {
+
+    $one_minute = 60;
+    $one_hour = 3600;
+    $one_day = 86400;
+
+    $bet_added = time() - strtotime($time);
+
+    if ($bet_added < $one_minute) {
+        $text = 'только что';
+    } elseif ($bet_added < $one_hour) {
+        $text = floor($bet_added / $one_minute) . ' мин назад';
+    } elseif ($bet_added < $one_day) {
+        $text = floor($bet_added / $one_hour) . ' ч назад';
+    } else {
+        $text = date('d.m.y в H:i', strtotime($time));
+    }
+
+    return $text;
+}
+
 function get_user_info($connect)
 {
     if (isset($_SESSION['user_id'])) {
