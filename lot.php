@@ -6,11 +6,11 @@ $errors = [];
 $form = [];
 
 $id = intval($_GET['id'] ?? 0);
-$sql = 'SELECT l.id, l.title, l.description, l.image_path, IFNULL(MAX(b.price), l.price) AS price, l.date_end, l.bet_step, c.name AS category, l.user_id_author '
+$sql = 'SELECT l.id, l.title, l.description, l.image_path, IFNULL(MAX(b.price), l.price) AS price, l.date_end, l.bet_step, c.name AS category, l.user_id_author, l.user_id_winner '
     . 'FROM lots l '
     . 'LEFT JOIN bets b ON l.id = b.lot_id '
     . 'LEFT JOIN categories c ON l.category_id = c.id '
-    . 'WHERE (l.date_end > NOW()) AND (l.user_id_winner IS NULL) AND l.id = ' . $id . ' '
+    . 'WHERE l.id = ' . $id . ' '
     . 'GROUP BY l.id';
 $result = mysqli_query($connect, $sql);
 $lot = $result ? mysqli_fetch_assoc($result) : [];
@@ -51,6 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($bets[0]) && ($bets[0]['user_id'] === $user['id'])) {
         $error_title = '403 Доступ запрещен';
         $error_text = 'Вы не можете добавить ставку, т.к. ваша ставка является последней';
+        get_page_error(403, $error_title, $error_text, $categories, $user);
+    }
+
+    if ((time() - strtotime($lot['date_end']) > 0) || $lot['user_id_winner']) {
+        $error_title = '403 Доступ запрещен';
+        $error_text = 'Вы не можете добавить ставку, т.к. лот уже закрыт';
         get_page_error(403, $error_title, $error_text, $categories, $user);
     }
 

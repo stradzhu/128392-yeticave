@@ -35,7 +35,10 @@
                     <? /* Если пользователь авторизован (count($user)) и он не является автором этого объявления ($user['id'] !== $lot['user_id_author']) и
                           ставок нету (!isset($bets[0]) или ставки есть, но последняя не от текущего пользователя ($bets[0]['user_id'] !== $user['id'])
                           то тогда показать форму для добавления ставки */?>
-                    <?php if (count($user) && ($user['id'] !== $lot['user_id_author']) && (!isset($bets[0]) || (isset($bets[0]) && $bets[0]['user_id'] !== $user['id']))): ?>
+                    <?php if (count($user) && ($user['id'] !== $lot['user_id_author'])
+                        && (!isset($bets[0]) || (isset($bets[0]) && $bets[0]['user_id'] !== $user['id']))
+                        && (strtotime($lot['date_end']) - time() > 0)
+                        && (is_null($lot['user_id_winner']))): ?>
                         <form class="lot-item__form" action="lot.php?id=<?= $lot['id']; ?>" method="post">
                             <p class="lot-item__form-item form__item<?= isset($errors['cost']) ? ' form__item--invalid' : ''; ?>">
                                 <label for="cost">Ваша ставка</label>
