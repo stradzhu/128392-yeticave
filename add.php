@@ -49,13 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form['step'] = intval($_POST['step'] ?? 0);
     $form['step'] = ($form['step'] > 0 && $form['step'] < 1000) ? $form['step'] : NULL;
 
-    // Валидация даты окончания лота. Минимум 1 день, максимум 14-ть дней (сам придумал)
+    // Валидация даты окончания лота. Минимум 1 день
     $form['date'] = mysqli_real_escape_string($connect, $_POST['date'] ?? NULL);
-    if (check_date_format($form['date'])) {
-        $date_start = date('Y-m-d', strtotime('+1 day'));
-        $date_end = date('Y-m-d', strtotime('+14 day'));
-        if (($form['date'] < $date_start) || ($form['date'] > $date_end)) $form['date'] = NULL;
-    } else {
+    $form['date'] = check_date_format($form['date']); // функция строку в формате Y.m.d или NULL
+    $date_start = date('Y-m-d', strtotime('+1 day'));
+    if (!$form['date'] || ($form['date'] < $date_start)) {
         $form['date'] = NULL;
     }
 
@@ -68,9 +66,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!count($errors)) {
         $form['date'] .= ' 23:59:59'; // я считаю, что аукцион нужно завершить, когда закончится день
 
+        if (!is_dir(__DIR__ .'/uploads') && !mkdir(__DIR__ .'/uploads')) {
+            $error_title = '500 Ошибка сервера';
+            $error_text = 'Новозможно создать папку uploads для загрузки фотографии';
+            get_page_error(500, $error_title, $error_text, $categories, $user);
+        }
+
         $tmp_name = $form['image'];
         $form['image'] = 'uploads/' . uniqid() . '.' . $file_extension;
-        move_uploaded_file($tmp_name, $form['image']);
+
+        if (!move_uploaded_file($tmp_name, $form['image'])) {
+            $error_title = '500 Ошибка сервера';
+            $error_text = 'Новозможно скопировать файл';
+            get_page_error(500, $error_title, $error_text, $categories, $user);
+        }
 
         $sql = "INSERT INTO lots (date_add, title, description, image_path, price, date_end, bet_step, category_id, user_id_author) VALUES "
             . "(NOW(), '{$form['name']}', '{$form['message']}', '{$form['image']}', '{$form['rate']}', '{$form['date']}', '{$form['step']}', '{$form['category']}', {$user['id']})";

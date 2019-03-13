@@ -23,9 +23,13 @@
                     </div>
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
-                            <span class="lot-item__amount">Текущая цена</span>
+                            <?php if ($lot['current_price'] > $lot['start_price']): ?>
+                                <span class="lot-item__amount">Текущая цена</span>
+                            <?php else: ?>
+                                <span class="lot-item__amount">Стартовая цена</span>
+                            <?php endif; ?>
                             <span class="lot-item__cost">
-                                <?= price_format($lot['price']); ?>
+                                <?= price_format($lot['current_price']); ?>
                             </span>
                         </div>
                         <div class="lot-item__min-cost">

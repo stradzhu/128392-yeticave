@@ -31,9 +31,13 @@
                         </h3>
                         <div class="lot__state">
                             <div class="lot__rate">
-                                <span class="lot__amount">Стартовая цена</span>
+                                <?php if ($item['current_price'] > $item['start_price']): ?>
+                                    <span class="lot__amount">Текущая цена</span>
+                                <?php else: ?>
+                                    <span class="lot__amount">Стартовая цена</span>
+                                <?php endif; ?>
                                 <span class="lot__cost">
-                                    <?= price_format($item['price']); ?><b class="rub">р</b>
+                                    <?= price_format($item['current_price']); ?><b class="rub">р</b>
                                 </span>
                             </div>
                             <div class="lot__timer timer">

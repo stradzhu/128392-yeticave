@@ -2,7 +2,7 @@
 
 require_once('init.php');
 
-$sql = 'SELECT l.id, l.title, IFNULL(MAX(b.price), l.price) AS price, l.image_path, l.date_add, l.date_end, c.name AS category '
+$sql = 'SELECT l.id, l.title, IFNULL(MAX(b.price), l.price) AS current_price, l.price AS start_price, l.image_path, l.date_add, l.date_end, c.name AS category '
     . 'FROM lots l '
     . 'LEFT JOIN bets b ON l.id = b.lot_id '
     . 'LEFT JOIN categories c ON l.category_id = c.id '

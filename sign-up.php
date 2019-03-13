@@ -96,9 +96,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form['message'] = mysqli_real_escape_string($connect, $form['message']);
 
         if ($form['image']) {
+
+            if (!is_dir(__DIR__ .'/uploads') && !mkdir(__DIR__ .'/uploads')) {
+                $error_title = '500 Ошибка сервера';
+                $error_text = 'Новозможно создать папку uploads для загрузки фотографии';
+                get_page_error(500, $error_title, $error_text, $categories, $user);
+            }
+
             $tmp_name = $form['image'];
             $form['image'] = 'uploads/' . uniqid() . '.' . $file_extension;
-            move_uploaded_file($tmp_name, $form['image']);
+
+            if (!move_uploaded_file($tmp_name, $form['image'])) {
+                $error_title = '500 Ошибка сервера';
+                $error_text = 'Новозможно скопировать файл';
+                get_page_error(500, $error_title, $error_text, $categories, $user);
+            }
         }
 
         $sql = "INSERT INTO users (date_add, email, name, password, image_path, contact) VALUES "

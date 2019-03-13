@@ -15,7 +15,7 @@
                 <select id="category" name="category" required>
                     <option<?= isset($form['category']) ? '' : ' selected'; ?> disabled value="">Выберите категорию</option>
                     <?php foreach ($categories as $item): ?>
-                        <option<?= ($form['category'] ?? '' == $item['id']) ? ' selected' : ''; ?> value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+                        <option<?= (($form['category'] ?? '') === $item['id']) ? ' selected' : ''; ?> value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <span class="form__error">Выберите категорию</span>
@@ -40,6 +40,7 @@
                     <span>+ Добавить</span>
                 </label>
             </div>
+            <span class="form__error">Загрузите фотографию лота</span>
         </div>
         <div class="form__container-three">
             <div class="form__item form__item--small<?= isset($errors['rate']) ? ' form__item--invalid' : ''; ?>">
@@ -56,7 +57,6 @@
                 <label for="date">Дата окончания торгов</label>
                 <input class="form__input-date" id="date" type="date" name="date" required
                        min="<?= date('Y-m-d', strtotime('+1 day')); ?>"
-                       max="<?= date('Y-m-d', strtotime('+14 day')); ?>"
                        value="<?= $form['date'] ?? ''; ?>">
                 <span class="form__error">Введите дату завершения торгов</span>
             </div>

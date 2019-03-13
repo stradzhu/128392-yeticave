@@ -6,7 +6,7 @@ $errors = [];
 $form = [];
 
 $id = intval($_GET['id'] ?? 0);
-$sql = 'SELECT l.id, l.title, l.description, l.image_path, IFNULL(MAX(b.price), l.price) AS price, l.date_end, l.bet_step, c.name AS category, l.user_id_author, l.user_id_winner '
+$sql = 'SELECT l.id, l.title, l.description, l.image_path, IFNULL(MAX(b.price), l.price) AS current_price, l.price AS start_price, l.date_end, l.bet_step, c.name AS category, l.user_id_author, l.user_id_winner '
     . 'FROM lots l '
     . 'LEFT JOIN bets b ON l.id = b.lot_id '
     . 'LEFT JOIN categories c ON l.category_id = c.id '
@@ -22,7 +22,7 @@ if (!$lot) {
 }
 
 // Нужно добавить "минимальная ставка", т.к. сразу посчитать это в SQL запросе я не смог
-$lot['bet_min'] = $lot['price'] + $lot['bet_step'];
+$lot['bet_min'] = $lot['current_price'] + $lot['bet_step'];
 
 // Получим информацию о ставках
 $sql = 'SELECT b.date_add, b.price, b.user_id, u.name '
@@ -71,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($connect, $sql);
 
             if ($result) {
-                $lot['price'] = $form['cost'];
-                $lot['bet_min'] = $lot['price'] + $lot['bet_step'];
+                $lot['current_price'] = $form['cost'];
+                $lot['bet_min'] = $lot['current_price'] + $lot['bet_step'];
 
                 array_unshift($bets, [
                     'date_add' => date('Y-m-d H:i:s'),
-                    'price' => $lot['price'],
+                    'price' => $lot['current_price'],
                     'user_id' => $user['id'],
                     'name' => $user['name']
                 ]);
